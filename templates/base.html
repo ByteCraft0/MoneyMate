@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}{{ app_name }}{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+{% if session.get('user_id') %}
+<div class="app-shell">
+  <aside class="sidebar">
+    <a class="brand" href="{{ url_for('dashboard') }}"><span class="brand-icon">₹</span><span>MoneyMate<small>PERSONAL FINANCE</small></span></a>
+    <nav>
+      <a href="{{ url_for('dashboard') }}" class="{{ 'active' if request.endpoint == 'dashboard' else '' }}">▦ <span>Overview</span></a>
+      <a href="{{ url_for('add_transaction', kind='income') }}">↙ <span>Add income</span></a>
+      <a href="{{ url_for('add_transaction', kind='expense') }}">↗ <span>Add expense</span></a>
+      <a href="{{ url_for('transfer') }}">⇄ <span>Transfer</span></a>
+      <a href="{{ url_for('transactions') }}" class="{{ 'active' if request.endpoint == 'transactions' else '' }}">☷ <span>Transactions</span></a>
+      <a href="{{ url_for('statistics') }}" class="{{ 'active' if request.endpoint == 'statistics' else '' }}">▥ <span>Statistics</span></a>
+      <a href="{{ url_for('accounts') }}" class="{{ 'active' if request.endpoint == 'accounts' else '' }}">▣ <span>Accounts</span></a>
+      <a href="{{ url_for('notes') }}" class="{{ 'active' if request.endpoint == 'notes' else '' }}">✎ <span>Notes</span></a>
+    </nav>
+    <div class="sidebar-bottom"><div class="user-chip"><span class="avatar">U</span><div><b>{{ current_user }}</b><small>Personal account</small></div></div>
+      <form method="post" action="{{ url_for('logout') }}"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button class="logout-btn">↪ Log out</button></form>
+    </div>
+  </aside>
+  <main class="main-content">
+    <header class="topbar"><div><span class="eyebrow">YOUR FINANCIAL SPACE</span><h1>{% block page_heading %}Overview{% endblock %}</h1></div><div class="topbar-date">{{ now_label if now_label is defined else '' }}</div></header>
+    {% with messages = get_flashed_messages(with_categories=true) %}{% if messages %}<div class="flash-stack">{% for category, message in messages %}<div class="flash {{ category }}">{{ message }}</div>{% endfor %}</div>{% endif %}{% endwith %}
+    {% block content %}{% endblock %}
+    <footer>MoneyMate <span>·</span> Your money, clearly understood.</footer>
+  </main>
+</div>
+{% else %}
+<div class="auth-wrap">
+  <div class="auth-brand"><span class="brand-icon">₹</span><span>MoneyMate<small>PERSONAL FINANCE</small></span></div>
+  {% with messages = get_flashed_messages(with_categories=true) %}{% if messages %}<div class="flash-stack">{% for category, message in messages %}<div class="flash {{ category }}">{{ message }}</div>{% endfor %}</div>{% endif %}{% endwith %}
+  {% block auth_content %}{% endblock %}
+</div>
+{% endif %}
+<script src="{{ url_for('static', filename='js/app.js') }}"></script>
+{% block scripts %}{% endblock %}
+</body></html>

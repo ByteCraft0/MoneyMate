@@ -1,0 +1,4 @@
+{% extends "base.html" %}{% block title %}Create account · MoneyMate{% endblock %}
+{% block auth_content %}<section class="auth-card"><div class="auth-kicker">GET STARTED</div><h1>Your money,<br>more organized.</h1><p class="muted">Create your private account to start tracking.</p>
+<form method="post" class="stack-form"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><label>Mobile number<input name="phone_number" type="tel" autocomplete="tel" placeholder="+91 98765 43210" required maxlength="20"></label><label>Create password<input name="password" type="password" autocomplete="new-password" minlength="8" placeholder="At least 8 characters" required></label><button class="btn primary full">Create account <span>→</span></button></form>
+<p class="auth-switch">Already have an account? <a href="{{ url_for('login') }}">Sign in</a></p><p class="tiny-note">Use a unique password. Your records are private to your account.</p></section>{% endblock %}
